@@ -292,11 +292,31 @@
 
       let taco = [];
       let result = "";
+      let time = 0
+      let won = false;
+      let failed = false
+      add([rect(80, 40, {radius: 20}), pos(352, 6), color(0, 0, 0)]);
+      let timeText = add([text(""), pos(360, 10)]);
+
+      setTimeout(() => {
+        if (!won) {
+          failed = true
+          // alert("You failed :(")
+          // location.reload()
+        }
+      }, 7100);
+
+      setInterval(() => {
+        time+= 0.10
+        let test = time.toString()
+        timeText.use(text(test.toString().substring(0,3)))
+      }, 100);
 
       onClick("done_btn", (d) => {
         if (d.done) {
-          if (result === randomTaco) {
+          if (result === randomTaco && !failed) {
             alert("You did it :D");
+            won = true;
             location.reload();
           } else {
             alert("You failed :(");
