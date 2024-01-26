@@ -12,7 +12,7 @@
     <script type="module">
       import kaboom from "https://unpkg.com/kaboom@3000.0.1/dist/kaboom.mjs";
       kaboom({
-        height: 380.7,
+        height: 450,
         width: 600,
       });
 
@@ -200,6 +200,12 @@
           width: 56,
           height: 36,
         },
+        bin: {
+          x: 0,
+          y: 72,
+          width: 55,
+          height: 47,
+        },
       });
 
       const counter = add([sprite("counter"), scale(4.85)]);
@@ -209,9 +215,6 @@
         pos(440, 80),
         area(),
         "pan",
-        {
-          cooked: false,
-        },
       ]);
       const tortilla_tray = add([
         sprite("tortilla_tray"),
@@ -250,8 +253,9 @@
         scale(2.24),
         "done_btn",
       ]);
-      add([sprite("Roll_btn"), pos(0, 300), area(), scale(2.24), "roll_btn"]);
-      add([sprite("Done_btn"), pos(476, 300), area(), scale(2.24), "done_btn"]);
+      add([sprite("Roll_btn"), pos(0, 300), area(), scale(2.8), "roll_btn"]);
+      add([sprite("Done_btn"), pos(445, 300), area(), scale(2.8), "done_btn"]);
+      add([sprite("bin"), pos(230, 300), area(), scale(2.8), "bin"]);
 
       let taco = [];
 
@@ -289,7 +293,6 @@
       makeDraggable("meat_tray", "meat", "meat");
 
       function makeDraggable(tt, ts, obj) {
-        console.log(tt);
         onClick(tt, () => {
           add([
             sprite(ts),
@@ -308,6 +311,7 @@
 
       let dragging = false;
       let hovering = false;
+      let hovered = false;
 
       onUpdate("draggable", (d) => {
         if (dragging) {
@@ -315,80 +319,122 @@
           const offsetY = mousePos().y - d.pos.y;
           d.pos = vec2(mousePos().x, mousePos().y);
         } else {
+          // const test =
           if (d.pos.y > 128 && !d.meat) {
-            if (d.tortilla_empty) {
+            if (d.tortilla_empty && !taco.includes("tortilla_empty")) {
               taco.push("tortilla_empty");
             } else if (d.cheese) {
-              if (taco.includes("tortilla_lettuce_meat")) {
-                taco.push("tortilla_lettuce_cheese_meat");
-              } else if (taco.includes("tortilla_lettuce")) {
-                taco.push("tortilla_lettuce_cheese");
-              } else if (taco.includes("tortilla_meat")) {
-                taco.push("tortilla_cheese_meat");
-              } else if (taco.includes("tortilla_empty")) {
-                taco.push("tortilla_cheese");
-              } else {
-                destroy(d);
+              if (!taco.join().includes("cheese")) {
+                if (taco.includes("tortilla_lettuce_meat")) {
+                  taco.push("tortilla_lettuce_cheese_meat");
+                } else if (taco.includes("tortilla_lettuce")) {
+                  taco.push("tortilla_lettuce_cheese");
+                } else if (taco.includes("tortilla_meat")) {
+                  taco.push("tortilla_cheese_meat");
+                } else if (taco.includes("tortilla_empty")) {
+                  taco.push("tortilla_cheese");
+                } else {
+                  destroy(d);
+                }
               }
             } else if (d.lettuce) {
-              if (taco.includes("tortilla_cheese_meat")) {
-                taco.push("tortilla_lettuce_cheese_meat");
-              } else if (taco.includes("tortilla_cheese")) {
-                taco.push("tortilla_lettuce_cheese");
-              } else if (taco.includes("tortilla_meat")) {
-                taco.push("tortilla_lettuce_meat");
-              } else if (taco.includes("tortilla_empty")) {
-                taco.push("tortilla_lettuce");
-              } else {
-                destroy(d);
+              if (!taco.join().includes("lettuce")) {
+                if (taco.includes("tortilla_cheese_meat")) {
+                  taco.push("tortilla_lettuce_cheese_meat");
+                } else if (taco.includes("tortilla_cheese")) {
+                  taco.push("tortilla_lettuce_cheese");
+                } else if (taco.includes("tortilla_meat")) {
+                  taco.push("tortilla_lettuce_meat");
+                } else if (taco.includes("tortilla_empty")) {
+                  taco.push("tortilla_lettuce");
+                } else {
+                  destroy(d);
+                }
               }
             } else if (d.meat_cooked) {
-              if (taco.includes("tortilla_lettuce_cheese")) {
-                console.log("YES");
-                taco.push("tortilla_lettuce_cheese_meat");
-                pan.use(sprite("pan_empty"));
-              } else if (taco.includes("tortilla_cheese")) {
-                taco.push("tortilla_cheese_meat");
-                pan.use(sprite("pan_empty"));
-              } else if (taco.includes("tortilla_lettuce")) {
-                taco.push("tortilla_lettuce_meat");
-              } else if (taco.includes("tortilla_empty")) {
-                taco.push("tortilla_meat");
-                pan.use(sprite("pan_empty"));
-              } else {
-                destroy(d);
+              if (!taco.join().includes("meat")) {
+                if (taco.includes("tortilla_lettuce_cheese")) {
+                  taco.push("tortilla_lettuce_cheese_meat");
+                  destroy("pan");
+                  pan = add([
+                    sprite("pan_empty"),
+                    scale(4.2),
+                    pos(440, 80),
+                    area(),
+                    "pan",
+                  ]);
+                } else if (taco.includes("tortilla_cheese")) {
+                  taco.push("tortilla_cheese_meat");
+                  destroy("pan");
+                  pan = add([
+                    sprite("pan_empty"),
+                    scale(4.2),
+                    pos(440, 80),
+                    area(),
+                    "pan",
+                  ]);
+                } else if (taco.includes("tortilla_lettuce")) {
+                  taco.push("tortilla_lettuce_meat");
+                  destroy("pan");
+                  pan = add([
+                    sprite("pan_empty"),
+                    scale(4.2),
+                    pos(440, 80),
+                    area(),
+                    "pan",
+                  ]);
+                } else if (taco.includes("tortilla_empty")) {
+                  taco.push("tortilla_meat");
+                  destroy(pan);
+                  pan = add([
+                    sprite("pan_empty"),
+                    scale(4.2),
+                    pos(440, 80),
+                    area(),
+                    "pan",
+                  ]);
+
+                } else {
+                  destroy(d);
+                }
               }
             }
             destroy(d);
             drawTaco();
           } else if (d.meat) {
-            console.log(pan.height);
             if (hovering) {
               destroy(d);
               pan.use(sprite("pan_meat"));
               wait(3, () => {
                 pan.use(sprite("pan_meat_cooked"));
-                makeDraggable("pan", "meat_cooked", "meat_cooked");
+                pan.use("pan_cooked");
+                makeDraggable("pan_cooked", "meat_cooked", "meat_cooked");
+                pan.cooked = true;
               });
             } else {
               destroy(d);
+              pan.cooked = false;
             }
-            pan.cooked = false;
           } else {
             destroy(d);
           }
         }
       });
 
+      onUpdate(() => {
+        console.log(hovering);
+      });
+
       onHover("pan", () => {
         hovering = true;
       });
+
       onHoverEnd("pan", () => {
+        // hovered = true
         hovering = false;
       });
 
       function drawTaco() {
-        console.log(taco);
         taco.forEach((t) => {
           add([sprite(t), scale(5), pos(120, 130), "t_e"]);
         });
