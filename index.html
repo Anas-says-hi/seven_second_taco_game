@@ -151,19 +151,19 @@
         },
         taco_cheese: {
           x: 26,
-          y: 152  + 16,
+          y: 152 + 16,
           width: 26,
           height: 16,
         },
-        taco_cheese_lettuce : {
+        taco_cheese_lettuce: {
           x: 26,
-          y: 152  + 16*2,
+          y: 152 + 16 * 2,
           width: 26,
           height: 16,
         },
-        taco_meat_lettuce : {
-          x: 26 ,
-          y: 152 + 16*3,
+        taco_meat_lettuce: {
+          x: 26,
+          y: 152 + 16 * 3,
           width: 26,
           height: 16,
         },
@@ -175,7 +175,7 @@
         },
         taco_meat_cheese: {
           x: 0,
-          y: 152 + 16*2,
+          y: 152 + 16 * 2,
           width: 26,
           height: 16,
         },
@@ -187,7 +187,20 @@
         },
       });
 
-      let taco_sprite = "tortilla_empty";
+      loadSpriteAtlas("assets/UI.png", {
+        Roll_btn: {
+          x: 0,
+          y: 0,
+          width: 53,
+          height: 36,
+        },
+        Done_btn: {
+          x: 0,
+          y: 36,
+          width: 56,
+          height: 36,
+        },
+      });
 
       const counter = add([sprite("counter"), scale(4.85)]);
       let pan = add([
@@ -229,26 +242,32 @@
         "meat_tray",
       ]);
 
-      const btn = add([rect(100, 50), pos(100, 300), area(), "btn"]);
+      add([
+        rect(width(), 100),
+        pos(0, 300),
+        color(58, 68, 102),
+        area(),
+        scale(2.24),
+        "done_btn",
+      ]);
+      add([sprite("Roll_btn"), pos(0, 300), area(), scale(2.24), "roll_btn"]);
+      add([sprite("Done_btn"), pos(476, 300), area(), scale(2.24), "done_btn"]);
 
       let taco = [];
 
-      onClick("btn", () => {
+      onClick("roll_btn", () => {
         destroyAll("t_e");
         if (taco.includes("tortilla_empty")) {
           add([sprite("taco_empty"), scale(5), pos(120, 130), "taco"]);
-        }
-        if (taco.includes("tortilla_lettuce_cheese_meat")) {
-          add([sprite("taco_every"), scale(5), pos(120, 130), "taco"]);
-        }
-        if (taco.includes("tortilla_lettuce_cheese")) {
-          add([sprite("taco_cheese_lettuce"), scale(5), pos(120, 130), "taco"]);
         }
         if (taco.includes("tortilla_lettuce")) {
           add([sprite("taco_lettuce"), scale(5), pos(120, 130), "taco"]);
         }
         if (taco.includes("tortilla_cheese")) {
           add([sprite("taco_cheese"), scale(5), pos(120, 130), "taco"]);
+        }
+        if (taco.includes("tortilla_lettuce_cheese")) {
+          add([sprite("taco_cheese_lettuce"), scale(5), pos(120, 130), "taco"]);
         }
         if (taco.includes("tortilla_meat")) {
           add([sprite("taco_meat"), scale(5), pos(120, 130), "taco"]);
@@ -258,6 +277,9 @@
         }
         if (taco.includes("tortilla_cheese_meat")) {
           add([sprite("taco_meat_cheese"), scale(5), pos(120, 130), "taco"]);
+        }
+        if (taco.includes("tortilla_lettuce_cheese_meat")) {
+          add([sprite("taco_every"), scale(5), pos(120, 130), "taco"]);
         }
       });
 
@@ -348,8 +370,8 @@
                 pan.use(sprite("pan_meat_cooked"));
                 makeDraggable("pan", "meat_cooked", "meat_cooked");
               });
-            }else{
-              destroy(d)
+            } else {
+              destroy(d);
             }
             pan.cooked = false;
           } else {
