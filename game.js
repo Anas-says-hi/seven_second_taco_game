@@ -5,6 +5,7 @@ kaboom({
 });
 // loadSound("song", "./assets/song.mp3");
 // play("song", {loop: true})
+
 loadFont("font", "./assets/font.otf");
 
 loadSpriteAtlas("assets/tacos.png", {
@@ -205,6 +206,8 @@ loadSpriteAtlas("assets/UI.png", {
   },
 });
 
+let won = false;
+
 scene("game", () => {
   const tacos = [
     "taco_empty",
@@ -284,16 +287,14 @@ scene("game", () => {
   let taco = [];
   let result = "";
   let time = 0;
-  let won = false;
   let failed = false;
   add([rect(60, 30, { radius: 20 }), pos(352 + 165, 16), color(87, 114, 119)]);
   let timeText = add([text("", { font: "font" }), pos(360 + 170, 10)]);
 
   setTimeout(() => {
     if (!won) {
-      failed = true;
-      alert("You failed :(");
-      go("game");
+      won = false;
+      go("end");
     }
   }, 7200);
 
@@ -304,15 +305,12 @@ scene("game", () => {
   }, 100);
 
   onClick("done_btn", (d) => {
-    if (d.done) {
-      if (result === randomTaco && !failed) {
-        alert("You did it :D");
-        won = true;
-        go("game");
-      } else {
-        alert("You failed :(");
-        go("game");
-      }
+    if (result === randomTaco && !failed) {
+      won = true;
+      go("end");
+    } else {
+      won = false;
+      go("game");
     }
   });
 
@@ -596,11 +594,41 @@ scene("game", () => {
   }
 });
 
-go("game");
-
 scene("end", () => {
-  add([text("Failed")]);
-  wait(3, () => {
+  setBackground([0, 0, 0]);
+  add([
+    text(won ? "You win :D" : "You failed", { font: "font", size: 78 }),
+    pos(160, 80),
+  ]);
+  const btn = add([rect(200, 100), outline(7), pos(200, 180), "btn", area()]);
+  btn.add([
+    text("Restart", { font: "font", size: 64 }),
+    color([0, 0, 0]),
+    pos(15, 12),
+  ]);
+
+  onClick("btn", () => {
     go("game");
   });
 });
+scene("start", () => {
+  loadSprite("logo", "./assets/logo.png");
+  setBackground([255, 0, 0]);
+  // add([text(won ? "You win :D" : "You failed", { font: "font", size: 78 }), pos(160, 80)]);
+  add([sprite("logo"), scale(3), pos(110, 60)]);
+  const btn = add([rect(200, 100), outline(7),opacity(0.5), pos(200, 230), "btn", area()]);
+  btn.add([
+    text("Play", { font: "font", size: 64 }),
+    color([0, 0, 0]),
+    pos(48, 12),
+  ]);
+
+  onUpdate((c) => {
+    btn.pos.y = wave(220, 240, time())
+})
+
+  onClick("btn", () => {
+    go("game");
+  });
+});
+go("start");
