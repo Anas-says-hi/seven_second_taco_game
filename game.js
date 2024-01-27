@@ -613,7 +613,7 @@ scene("end", () => {
 });
 scene("start", () => {
   loadSprite("logo", "./assets/logo.png");
-  setBackground([255, 0, 0]);
+  setBackground([65, 29, 49]);
   // add([text(won ? "You win :D" : "You failed", { font: "font", size: 78 }), pos(160, 80)]);
   add([sprite("logo"), scale(3), pos(110, 60)]);
   const btn = add([rect(200, 100), outline(7),opacity(0.5), pos(200, 230), "btn", area()]);
