@@ -1,4 +1,4 @@
-![Game logo](./assets/logo.png)
+<img src="./assets/logo.png"/>
 
 # 7 Second Taco
 
